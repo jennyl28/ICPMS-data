@@ -44,3 +44,18 @@ if mass_file:
     ] = load_mass_file(
         mass_file
     )
+
+if has_standards:
+
+    calibration_file = st.file_uploader(
+        "Upload Calibration Standards File",
+        type=["xlsx"]
+    )
+
+    if calibration_file:
+
+        st.session_state[
+            "calibration_data"
+        ] = pd.read_excel(
+            calibration_file
+        )
