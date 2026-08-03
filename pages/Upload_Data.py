@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 from icpms_data.data_loader import (
     load_icpms_file
