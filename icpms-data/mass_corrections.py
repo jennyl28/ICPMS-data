@@ -1,3 +1,11 @@
-def mass_correct(value, sample_mass):
+def apply_mass_correction(
+    df,
+    isotope
+):
 
-    return value * sample_mass
+    df[f"{isotope}_mass_corr"] = (
+        df[f"{isotope}_dil_corr"]
+        * df["Mass Correction"]
+    )
+
+    return df
