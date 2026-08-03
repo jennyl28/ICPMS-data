@@ -1,19 +1,23 @@
 import streamlit as st
+import pandas as pd
 
 st.title(
-    "Mass & Dilution Factors"
+    "Mass & Dilution Corrections"
 )
 
-if "mass_data" not in st.session_state:
+if "isotope_info" in st.session_state:
 
-    st.warning(
-        "Upload Mass File First"
+    st.subheader(
+        "Detected Isotopes"
     )
 
-else:
-
-    st.write(
+    isotope_df = pd.DataFrame(
         st.session_state[
-            "mass_data"
+            "isotope_info"
         ]
+    )
+
+    st.dataframe(
+        isotope_df,
+        use_container_width=True
     )
