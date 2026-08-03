@@ -9,6 +9,7 @@ from icpms_data.mass_parser import (
     load_mass_file
 )
 
+from icpms_data.isotope_detector import (detect_isotope_columns)
 
 st.title("Upload Data")
 
@@ -31,12 +32,14 @@ st.session_state[
 ] = has_stds
 
 if icpms_file:
+    df = load_icpms_file(icpms_file)
+    st.session_state["raw_data"] = df
+    isotope_info = detect_isotope_columns(df)
+    st.session_state["isotope_info"] = isotope_info
+    
+    st.success(
+        f"Detected {len(isotope_info)} isotope channels")
 
-    st.session_state[
-        "raw_data"
-    ] = load_icpms_file(
-        icpms_file
-    )
 
 if mass_file:
 
