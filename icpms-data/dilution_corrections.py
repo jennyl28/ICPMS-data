@@ -1,3 +1,11 @@
-def dilution_correct(value, dilution_factor):
+def apply_dilution(
+    df,
+    isotope
+):
 
-    return value * dilution_factor
+    df[f"{isotope}_dil_corr"] = (
+        df[f"{isotope}_blk_corr"]
+        * df["Dilution Factor"]
+    )
+
+    return df
