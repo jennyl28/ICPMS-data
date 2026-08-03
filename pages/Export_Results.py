@@ -1,25 +1,53 @@
 import streamlit as st
+import pandas as pd
+from io import BytesIO
 
-from icpms_data.exports import (
-    export_excel
-)
-
-st.title("Export")
+st.title("Export Results")
 
 if (
     "processed_data"
-    in st.session_state
+    not in st.session_state
 ):
 
-    excel_data = export_excel(
-        st.session_state[
-            "processed_data"
-        ]
+    st.stop()
+
+df = st.session_state[
+    "processed_data"
+]
+
+buffer = BytesIO()
+
+with pd.ExcelWriter(
+    buffer,
+    engine="xlsxwriter"
+) as writer:
+
+    df.to_excel(
+        writer,
+        sheet_name="Results",
+        index=False
     )
 
-    st.download_button(
-        "Download Results",
-        excel_data,
-        "Processed_Results.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    if (
+        "calibration_results"
+        in st.session_state
+    ):
+
+        pd.DataFrame(
+            st.session_state[
+                "calibration_results"
+            ]
+        ).T.to_excel(
+            writer,
+            sheet_name="Calibration_QC"
+        )
+
+st.download_button(
+    "Download Results",
+    buffer.getvalue(),
+    "ICPMS_Results.xlsx",
+    mime=(
+        "application/vnd.openxmlformats-"
+        "officedocument.spreadsheetml.sheet"
     )
+)
