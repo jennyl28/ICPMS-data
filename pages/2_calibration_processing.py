@@ -1,8 +1,15 @@
 import pandas as pd
 import re
-
+from pathlib import Path
 from scipy.stats import linregress
 
+def load_radionuclides():
+    file_path = (
+        Path(__file__).parent.parent
+        / "data"
+        / "radionuclides.csv")
+
+return pd.read_csv(file_path)
 
 def find_standards(
     df,
