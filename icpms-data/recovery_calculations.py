@@ -1,6 +1,10 @@
-def percent_recovery(
+def calculate_recovery(
     measured,
-    reference
+    expected
 ):
 
-    return measured/reference * 100
+    return (
+        measured
+        /
+        expected
+    ) * 100
