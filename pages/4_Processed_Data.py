@@ -1,18 +1,18 @@
 import streamlit as st
 
-from icpms_data.blank_corrections import (
+from icpms-data.blank_corrections import (
     apply_nearest_blank
 )
 
-from icpms_data.mass_corrections import (
+from icpms-data.mass_corrections import (
     apply_mass_correction
 )
 
-from icpms_data.dilution_corrections import (
+from icpms-data.dilution_corrections import (
     apply_dilution
 )
 
-from icpms_data.calibration_processing import (
+from icpms-data.calibration_processing import (
     apply_all_calibrations
 )
 
