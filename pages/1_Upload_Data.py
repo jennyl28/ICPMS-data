@@ -52,6 +52,6 @@ if mass_file:
     )
 
 if has_stds:
-    st.info(session_state["Calibration standards will be extracted from ICP-MS file")
+    st.info(session_state["Calibration standards will be extracted from ICP-MS file"])
 
    
