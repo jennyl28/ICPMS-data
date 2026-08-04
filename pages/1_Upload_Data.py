@@ -3,15 +3,15 @@ import pandas as pd
 
 st.write("Upload data page loaded")
 
-from icpms-data.data_loader import (
+from icpms_data.data_loader import (
     load_icpms_file
 )
 
-from icpms-data.mass_parser import (
+from icpms_data.mass_parser import (
     load_mass_file
 )
 
-from icpms-data.isotope_detector import (detect_isotope_columns)
+from icpms_data.isotope_detector import (detect_isotope_columns)
 
 st.title("Upload Data")
 
