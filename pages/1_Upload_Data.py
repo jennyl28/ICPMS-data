@@ -30,39 +30,16 @@ if icpms_file:
         df = load_icpms_file(
             icpms_file
         )
-
-        st.session_state[
-            "raw_data"
-        ] = df
-
-        st.write(
-            "Shape:"
-        )
-
-        st.write(
-            df.shape
-        )
-
-        with st.expander(
-            "View dataset"
-        ):
-
-            st.dataframe(
-                df.astype(str),
-                use_container_width=True
-            )
-
-        st.write(
-            "Column names"
-        )
-
-        st.write(
-            df.columns.tolist()
-        )
-
-        isotope_info = (
-            detect_isotope_columns(df)
-        )
+        df = load_icpms_file(
+            icpms_file)
+        st.write("Shape")
+        st.write(df.shape)
+        st.write("Raw transposed data")
+        st.dataframe(
+            df.astype(str),
+            use_container_width=True)
+        
+        st.stop()
 
         st.session_state[
             "isotope_info"
