@@ -30,23 +30,32 @@ if icpms_file:
         df = load_icpms_file(
             icpms_file
         )
-        df = load_icpms_file(
-            icpms_file)
-        st.write("Shape")
-        st.write(df.shape)
-        st.write("Raw transposed data")
-        st.dataframe(
-            df.astype(str),
-            use_container_width=True)
-        
-        st.stop()
+
+        st.session_state["raw_data"] = df
+
+        st.success(
+            f"Loaded {len(df)} samples"
+        )
+
+        st.write("Columns found:")
+        st.write(df.columns.tolist())
+
+        with st.expander(
+            "View dataset"
+        ):
+            st.dataframe(
+                df.astype(str),
+                use_container_width=True
+            )
+
+        isotope_info = detect_isotope_columns(df)
 
         st.session_state[
             "isotope_info"
         ] = isotope_info
 
         st.success(
-            f"Detected {len(isotope_info)} isotope channels"
+            f"Detected {len(isotope_info)} isotopes"
         )
 
     except Exception as e:
