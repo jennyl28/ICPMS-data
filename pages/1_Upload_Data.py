@@ -54,12 +54,11 @@ if icpms_file:
 
         st.write("Data Preview:")
         st.dataframe(df)
-
-    with st.expander("View full ICP-MS dataset"):
-    st.dataframe(
-        df,
-        use_container_width=True
-    )
+        
+        with st.expander("View full ICP-MS dataset"):
+            st.dataframe(
+                df,
+                use_container_width=True)
 
     except Exception as e:
 
