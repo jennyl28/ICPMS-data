@@ -40,7 +40,7 @@ if icpms_file:
         )
 
         st.write(
-            df.shape"
+            df.shape
         )
 
         with st.expander(
