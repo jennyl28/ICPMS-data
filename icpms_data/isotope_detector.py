@@ -2,29 +2,30 @@ import re
 
 
 def detect_isotope_columns(df):
-    """
-    Detect all ICP-MS isotope columns.
-    """
 
     isotopes = []
 
     pattern = (
-        r"(\\d+)\\s*->\\s*(\\d+)\\s+"
-        r"([A-Za-z]+)"
-        r".*?\\[\\s*(.*?)\\s*\\]"
+        r"(\d+)\s*(?:->|→)\s*(\d+)\s+([A-Za-z]+)"
     )
 
     for col in df.columns:
 
-        match = re.search(pattern, str(col))
+        match = re.search(
+            pattern,
+            str(col)
+        )
 
         if match:
 
-            isotopes.append({
-                "column": col,
-                "mass": int(match.group(1)),
-                "element": match.group(3),
-                "gas": match.group(4)
-            })
+            isotopes.append(
+                {
+                    "column": col,
+                    "mass": int(
+                        match.group(2)
+                    ),
+                    "element": match.group(3)
+                }
+            )
 
     return isotopes
