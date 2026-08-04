@@ -49,7 +49,7 @@ if mass_file:
         mass_file
     )
 
-if has_standards:
+if has_stds:
 
     calibration_file = st.file_uploader(
         "Upload Calibration Standards File",
