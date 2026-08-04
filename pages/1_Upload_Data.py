@@ -1,6 +1,7 @@
-st.write("Upload data page loaded")
 import streamlit as st
 import pandas as pd
+
+st.write("Upload data page loaded")
 
 from icpms_data.data_loader import (
     load_icpms_file
