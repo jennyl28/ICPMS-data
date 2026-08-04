@@ -5,19 +5,31 @@ st.title(
     "Mass & Dilution Corrections"
 )
 
-if "isotope_info" in st.session_state:
+st.write(
+    "Session State Keys:"
+)
 
-    st.subheader(
-        "Detected Isotopes"
+st.write(
+    list(st.session_state.keys())
+)
+
+if "isotope_info" not in st.session_state:
+
+    st.warning(
+        "No isotope information found. Please upload an ICP-MS file first."
     )
 
-    isotope_df = pd.DataFrame(
-        st.session_state[
-            "isotope_info"
-        ]
-    )
+    st.stop()
 
-    st.dataframe(
-        isotope_df,
-        use_container_width=True
-    )
+isotope_info = st.session_state[
+    "isotope_info"
+]
+
+st.write(
+    f"Number of isotopes detected: {len(isotope_info)}"
+)
+
+st.dataframe(
+    pd.DataFrame(isotope_info),
+    use_container_width=True
+)
