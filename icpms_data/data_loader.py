@@ -1,43 +1,91 @@
 import pandas as pd
 
+
 def load_icpms_file(uploaded_file):
 
+    # Read workbook
     raw = pd.read_excel(
         uploaded_file,
         sheet_name=0,
         header=None
     )
 
+    # Transpose
     raw = raw.T
 
-    isotope_row = raw.iloc[0]
-    field_row = raw.iloc[1]
+    # Generate headers from first two rows
+    headers = []
 
-    columns = []
+    for i in range(len(raw.columns)):
 
-    for iso, field in zip(isotope_row, field_row):
+        isotope = raw.iloc[0, i]
+        field = raw.iloc[1, i]
 
-        iso = "" if pd.isna(iso) else str(iso).strip()
-        field = "" if pd.isna(field) else str(field).strip()
+        isotope = (
+            ""
+            if pd.isna(isotope)
+            else str(isotope).strip()
+        )
 
-        if iso == "":
-            columns.append(field)
+        field = (
+            ""
+            if pd.isna(field)
+            else str(field).strip()
+        )
 
-        elif field == "":
-            columns.append(iso)
-
-        else:
-            columns.append(
-                f"{iso} {field}"
+        # Ignore qualification messages
+        if (
+            "Calibration Curve Fit"
+            in isotope
+            or "CPS RSD value"
+            in isotope
+        ):
+            headers.append(
+                f"Warning_{i}"
             )
 
-    data = raw.iloc[2:].copy()
+        elif isotope == "Sample":
 
-    data.columns = columns
+            headers.append(
+                "Sample"
+            )
 
-    data.reset_index(
+        elif isotope == "":
+
+            headers.append(
+                field
+            )
+
+        elif field == "":
+
+            headers.append(
+                isotope
+            )
+
+        else:
+
+            headers.append(
+                f"{isotope}_{field}"
+            )
+
+    # Remove first two rows
+    df = raw.iloc[2:].copy()
+
+    # Apply headers
+    df.columns = headers
+
+    # Remove warning columns
+    df = df.loc[
+        :,
+        ~df.columns.str.startswith(
+            "Warning_"
+        )
+    ]
+
+    # Reset index
+    df.reset_index(
         drop=True,
         inplace=True
     )
 
-    return data
+    return df
