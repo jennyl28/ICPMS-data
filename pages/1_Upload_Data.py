@@ -33,7 +33,7 @@ if icpms_file:
         st.write("Shape:")
         st.write(df.shape)
         st.write("first 20 rows and columns:")
-        st.dataframe(df.iloc[:20, :20])
+        st.write(df.iloc[:20, :10])
 
         st.session_state["raw_data"] = df
 
