@@ -1,3 +1,4 @@
+st.write("Upload data page loaded")
 import streamlit as st
 import pandas as pd
 
