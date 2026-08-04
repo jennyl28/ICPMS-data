@@ -8,8 +8,8 @@ def load_radionuclides():
         Path(__file__).parent.parent
         / "data"
         / "radionuclides.csv")
-
-return pd.read_csv(file_path)
+    
+    return pd.read_csv(file_path)
 
 def find_standards(
     df,
