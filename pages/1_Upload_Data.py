@@ -35,16 +35,12 @@ if icpms_file:
             "raw_data"
         ] = df
 
-        st.success(
-            "ICP-MS data loaded"
+        st.write(
+            "Shape:"
         )
 
         st.write(
-            f"{df.shape[0]} samples loaded"
-        )
-
-        st.write(
-            f"{df.shape[1]} columns loaded"
+            df.shape"
         )
 
         with st.expander(
