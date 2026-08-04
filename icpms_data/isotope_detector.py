@@ -4,21 +4,6 @@ import re
 def detect_isotope_columns(df):
     """
     Detect all ICP-MS isotope columns.
-
-    Returns
-    -------
-    list of dict
-
-    Example:
-
-    [
-        {
-            "column": "88 -> 88  Sr  [ No Gas ]",
-            "element": "Sr",
-            "mass": 88,
-            "gas": "No Gas"
-        }
-    ]
     """
 
     isotopes = []
