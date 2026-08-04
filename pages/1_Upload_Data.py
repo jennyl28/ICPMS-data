@@ -46,11 +46,20 @@ if icpms_file:
         )
 
         # Temporary debugging
+        st.write("Shape")
+        st.write(df.shape)
+        
         st.write("Columns:")
         st.write(df.columns.tolist())
 
-        st.write("Preview:")
-        st.dataframe(df.head())
+        st.write("Data Preview:")
+        st.dataframe(df)
+
+    with st.expander("View full ICP-MS dataset"):
+    st.dataframe(
+        df,
+        use_container_width=True
+    )
 
     except Exception as e:
 
