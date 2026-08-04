@@ -30,15 +30,42 @@ if icpms_file:
         df = load_icpms_file(
             icpms_file
         )
-        st.write("Shape:")
-        st.write(df.shape)
-        st.write("first 20 rows and columns:")
-        st.write(df.iloc[:20, :10])
 
-        st.session_state["raw_data"] = df
+        st.session_state[
+            "raw_data"
+        ] = df
 
-        isotope_info = detect_isotope_columns(
-            df
+        st.success(
+            "ICP-MS data loaded"
+        )
+
+        st.write(
+            f"{df.shape[0]} samples loaded"
+        )
+
+        st.write(
+            f"{df.shape[1]} columns loaded"
+        )
+
+        with st.expander(
+            "View dataset"
+        ):
+
+            st.dataframe(
+                df.astype(str),
+                use_container_width=True
+            )
+
+        st.write(
+            "Column names"
+        )
+
+        st.write(
+            df.columns.tolist()
+        )
+
+        isotope_info = (
+            detect_isotope_columns(df)
         )
 
         st.session_state[
@@ -48,21 +75,6 @@ if icpms_file:
         st.success(
             f"Detected {len(isotope_info)} isotope channels"
         )
-
-        # Temporary debugging
-        st.write("Shape")
-        st.write(df.shape)
-        
-        st.write("Columns:")
-        st.write(df.columns.tolist())
-
-        st.write("Data Preview:")
-        st.dataframe(df)
-        
-        with st.expander("View full ICP-MS dataset"):
-            st.dataframe(
-                df,
-                use_container_width=True)
 
     except Exception as e:
 
