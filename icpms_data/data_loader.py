@@ -15,5 +15,12 @@ def load_icpms_file(uploaded_file):
     raw = raw.iloc[1:].reset_index(
         drop=True
     )
+    st.write("Shape")
+    st.write(df.shape)
+    
+    st.write("Top left corner")
+    
+    st.dataframe(
+        df.iloc[:20, :20])
 
     return raw
