@@ -31,24 +31,37 @@ if icpms_file:
             icpms_file
         )
 
-        st.session_state["raw_data"] = df
+        st.session_state[
+            "raw_data"
+        ] = df
 
         st.success(
             f"Loaded {len(df)} samples"
         )
 
-        st.write("Columns found:")
-        st.write(df.columns.tolist())
+        st.write(
+            f"Shape: {df.shape}"
+        )
 
         with st.expander(
-            "View dataset"
+            "Preview Data"
         ):
             st.dataframe(
-                df.astype(str),
+                df,
                 use_container_width=True
             )
 
-        isotope_info = detect_isotope_columns(df)
+        st.write(
+            "Columns found:"
+        )
+
+        st.write(
+            df.columns.tolist()
+        )
+
+        isotope_info = detect_isotope_columns(
+            df
+        )
 
         st.session_state[
             "isotope_info"
