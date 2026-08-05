@@ -11,10 +11,12 @@ def detect_isotope_columns(df):
 
     for col in df.columns:
 
-        if not str(col).endswith("_CPS"):
+        col = str(col)
+
+        if not col.endswith("_CPS"):
             continue
 
-        match = pattern.search(str(col))
+        match = pattern.search(col)
 
         if match:
 
