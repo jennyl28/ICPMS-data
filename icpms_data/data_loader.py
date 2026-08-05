@@ -8,6 +8,9 @@ def load_icpms_file(uploaded_file):
         uploaded_file,
         header=None
     )
+    print("RAW SHAPE")
+    print(raw.shape)
+    print(raw.head(20))
 
     # First column contains row identifiers
     row_labels = raw.iloc[:, 0].astype(str)
