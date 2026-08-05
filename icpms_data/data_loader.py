@@ -25,28 +25,6 @@ def load_icpms_file(uploaded_file):
         "Sample Name"
     }
 
-    columns = []
-    current_isotope = None
-
-    for label in row_labels:
-
-        label = str(label).strip()
-
-        if label in metadata_rows:
-
-            columns.append(label)
-
-        elif "->" in label or "→" in label:
-
-            current_isotope = label
-
-        elif label.upper() == "CPS":
-
-            columns.append(f"{current_isotope}_CPS")
-
-        elif "RSD" in label.upper():
-
-            columns.append(f"{current_isotope}_CPS_RSD")
 
     # Build dataframe row-by-row
     data_rows = []
@@ -77,13 +55,13 @@ def load_icpms_file(uploaded_file):
 
                 current_isotope = label
 
-            elif label.upper() == "CPS":
+            elif label.strip().upper() == "CPS":
 
                 row_dict[
                     f"{current_isotope}_CPS"
                 ] = value
 
-            elif "RSD" in label.upper():
+            elif "RSD" in label.strip().upper():
 
                 row_dict[
                     f"{current_isotope}_CPS_RSD"
@@ -92,5 +70,9 @@ def load_icpms_file(uploaded_file):
         data_rows.append(row_dict)
 
     df = pd.DataFrame(data_rows)
+
+    print(type(df))
+    print(df.shape)
+    print(df.head())
 
     return df
