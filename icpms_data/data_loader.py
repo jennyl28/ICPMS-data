@@ -1,5 +1,4 @@
 import pandas as pd
-import re
 
 
 def load_icpms_file(uploaded_file):
@@ -8,74 +7,59 @@ def load_icpms_file(uploaded_file):
         uploaded_file,
         header=None
     )
-    print("RAW SHAPE")
-    print(raw.shape)
-    print(raw.head(20))
 
-    # First column contains row identifiers
-    row_labels = raw.iloc[:, 0].astype(str)
+    # header rows
+    isotope_row = raw.iloc[0]
+    field_row = raw.iloc[1]
 
-    # Remaining columns contain samples
-    values = raw.iloc[:, 1:]
+    columns = []
 
-    # Metadata rows
-    metadata_rows = {
-        "Rjct",
-        "Data File",
-        "Acq. Date-Time",
-        "Type",
-        "Level",
-        "Sample Name"
-    }
+    current_isotope = None
 
+    for iso, field in zip(isotope_row, field_row):
 
-    # Build dataframe row-by-row
-    data_rows = []
+        iso = "" if pd.isna(iso) else str(iso).strip()
+        field = "" if pd.isna(field) else str(field).strip()
 
-    sample_count = values.shape[1]
+        # isotope label row
+        if "->" in iso or "→" in iso:
+            current_isotope = iso
 
-    for sample_idx in range(sample_count):
+        # metadata columns
+        if field in [
+            "Rjct",
+            "Data File",
+            "Acq. Date-Time",
+            "Type",
+            "Level",
+            "Sample Name"
+        ]:
+            columns.append(field)
 
-        row_dict = {}
+        # isotope measurement columns
+        elif field == "CPS":
+            columns.append(
+                f"{current_isotope}_CPS"
+            )
 
-        current_isotope = None
+        elif "RSD" in field.upper():
+            columns.append(
+                f"{current_isotope}_CPS_RSD"
+            )
 
-        col_data = values.iloc[:, sample_idx]
+        else:
+            columns.append(
+                f"Unnamed_{len(columns)}"
+            )
 
-        output_col = 0
+    # actual data starts on row 2
+    df = raw.iloc[2:].copy()
 
-        for i, label in enumerate(row_labels):
+    df.columns = columns
 
-            label = str(label).strip()
-
-            value = col_data.iloc[i]
-
-            if label in metadata_rows:
-
-                row_dict[label] = value
-
-            elif "->" in label or "→" in label:
-
-                current_isotope = label
-
-            elif label.strip().upper() == "CPS":
-
-                row_dict[
-                    f"{current_isotope}_CPS"
-                ] = value
-
-            elif "RSD" in label.strip().upper():
-
-                row_dict[
-                    f"{current_isotope}_CPS_RSD"
-                ] = value
-
-        data_rows.append(row_dict)
-
-    df = pd.DataFrame(data_rows)
-
-    print(type(df))
-    print(df.shape)
-    print(df.head())
+    df.reset_index(
+        drop=True,
+        inplace=True
+    )
 
     return df
