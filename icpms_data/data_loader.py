@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 
 
 def load_icpms_file(uploaded_file):
@@ -8,42 +9,88 @@ def load_icpms_file(uploaded_file):
         header=None
     )
 
-    # File is parameter rows x sample columns
-    raw = raw.T
+    # First column contains row identifiers
+    row_labels = raw.iloc[:, 0].astype(str)
 
-    # First row after transpose contains labels
-    first_col = raw.iloc[:, 0]
+    # Remaining columns contain samples
+    values = raw.iloc[:, 1:]
 
-    # Use first column as row index
-    raw.index = first_col
+    # Metadata rows
+    metadata_rows = {
+        "Rjct",
+        "Data File",
+        "Acq. Date-Time",
+        "Type",
+        "Level",
+        "Sample Name"
+    }
 
-    # Remove first column
-    raw = raw.iloc[:, 1:]
+    columns = []
+    current_isotope = None
 
-    # Transpose back so samples become rows
-    df = raw.T
+    for label in row_labels:
 
-    # Use row labels as columns
-    df.columns = raw.index
+        label = str(label).strip()
 
-    # Remove duplicate column names by appending numbers
-    cols = pd.Series(df.columns)
+        if label in metadata_rows:
 
-    for dup in cols[cols.duplicated()].unique():
+            columns.append(label)
 
-        dup_idx = cols[cols == dup].index
+        elif "->" in label or "→" in label:
 
-        cols.iloc[dup_idx] = [
-            f"{dup}_{i}"
-            if i > 0 else dup
-            for i in range(len(dup_idx))
-        ]
+            current_isotope = label
 
-    df.columns = cols
+        elif label.upper() == "CPS":
 
-    df.reset_index(
-        drop=True,
-        inplace=True
-    )
+            columns.append(f"{current_isotope}_CPS")
+
+        elif "RSD" in label.upper():
+
+            columns.append(f"{current_isotope}_CPS_RSD")
+
+    # Build dataframe row-by-row
+    data_rows = []
+
+    sample_count = values.shape[1]
+
+    for sample_idx in range(sample_count):
+
+        row_dict = {}
+
+        current_isotope = None
+
+        col_data = values.iloc[:, sample_idx]
+
+        output_col = 0
+
+        for i, label in enumerate(row_labels):
+
+            label = str(label).strip()
+
+            value = col_data.iloc[i]
+
+            if label in metadata_rows:
+
+                row_dict[label] = value
+
+            elif "->" in label or "→" in label:
+
+                current_isotope = label
+
+            elif label.upper() == "CPS":
+
+                row_dict[
+                    f"{current_isotope}_CPS"
+                ] = value
+
+            elif "RSD" in label.upper():
+
+                row_dict[
+                    f"{current_isotope}_CPS_RSD"
+                ] = value
+
+        data_rows.append(row_dict)
+
+    df = pd.DataFrame(data_rows)
 
     return df
