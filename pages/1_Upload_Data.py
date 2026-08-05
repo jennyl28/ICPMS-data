@@ -7,21 +7,33 @@ from icpms_data.isotope_detector import detect_isotope_columns
 
 st.title("Upload Data")
 
+# ----------------------------
+# File Uploads
+# ----------------------------
+
 icpms_file = st.file_uploader(
     "ICP-MS File",
-    type=["xlsx"]
+    type=["csv"]
 )
 
 mass_file = st.file_uploader(
     "Mass File",
-    type=["xlsx"]
+    type=["csv"]
 )
+
+# ----------------------------
+# Calibration Standards
+# ----------------------------
 
 has_stds = st.checkbox(
     "Calibration Standards Included"
 )
 
 st.session_state["has_cal_standards"] = has_stds
+
+# ----------------------------
+# ICP-MS Data
+# ----------------------------
 
 if icpms_file:
 
@@ -35,32 +47,8 @@ if icpms_file:
             "raw_data"
         ] = df
 
-        st.success(
-            f"Loaded {len(df)} samples"
-        )
-
-        st.write(
-            f"Shape: {df.shape}"
-        )
-
-        with st.expander(
-            "Preview Data"
-        ):
-            st.dataframe(
-                df,
-                use_container_width=True
-            )
-
-        st.write(
-            "Columns found:"
-        )
-
-        st.write(
-            df.columns.tolist()
-        )
-
-        isotope_info = detect_isotope_columns(
-            df
+        isotope_info = (
+            detect_isotope_columns(df)
         )
 
         st.session_state[
@@ -68,14 +56,76 @@ if icpms_file:
         ] = isotope_info
 
         st.success(
+            f"Loaded {len(df)} samples"
+        )
+
+        st.success(
             f"Detected {len(isotope_info)} isotopes"
         )
+
+        st.write(
+            f"Data Shape: {df.shape}"
+        )
+
+        # Optional automatic standard detection
+        if "Type" in df.columns:
+
+            detected_stds = (
+                df["Type"]
+                .astype(str)
+                .str.contains(
+                    "CalStd",
+                    case=False,
+                    na=False
+                )
+                .any()
+            )
+
+            if detected_stds:
+
+                st.info(
+                    "Calibration standards detected in uploaded file."
+                )
+
+        with st.expander(
+            "Preview ICP-MS Data"
+        ):
+
+            st.dataframe(
+                df,
+                width="stretch"
+            )
+
+        with st.expander(
+            "Detected Columns"
+        ):
+
+            st.write(
+                df.columns.tolist()
+            )
+
+        with st.expander(
+            "Detected Isotopes"
+        ):
+
+            isotope_df = pd.DataFrame(
+                isotope_info
+            )
+
+            st.dataframe(
+                isotope_df,
+                width="stretch"
+            )
 
     except Exception as e:
 
         st.error(
             f"Error loading ICP-MS file: {e}"
         )
+
+# ----------------------------
+# Mass File
+# ----------------------------
 
 if mass_file:
 
@@ -93,11 +143,24 @@ if mass_file:
             "Mass file loaded successfully"
         )
 
+        with st.expander(
+            "Preview Mass Data"
+        ):
+
+            st.dataframe(
+                mass_data,
+                width="stretch"
+            )
+
     except Exception as e:
 
         st.error(
             f"Error loading mass file: {e}"
         )
+
+# ----------------------------
+# Standards Status
+# ----------------------------
 
 if has_stds:
 
