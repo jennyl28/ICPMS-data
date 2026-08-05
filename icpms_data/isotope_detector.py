@@ -5,28 +5,23 @@ def detect_isotope_columns(df):
 
     isotopes = []
 
-    pattern = (
+    pattern = re.compile(
         r"(\d+)\s*(?:->|→)\s*(\d+)\s+([A-Za-z]+)"
     )
 
     for col in df.columns:
 
-        if not col.endswith("_CPS"):
+        if not str(col).endswith("_CPS"):
             continue
 
-        match = re.search(
-            pattern,
-            str(col)
-        )
+        match = pattern.search(str(col))
 
         if match:
 
             isotopes.append(
                 {
                     "column": col,
-                    "mass": int(
-                        match.group(2)
-                    ),
+                    "mass": int(match.group(2)),
                     "element": match.group(3)
                 }
             )
