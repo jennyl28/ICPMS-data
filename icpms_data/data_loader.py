@@ -1,19 +1,28 @@
 import pandas as pd
 
 
+METADATA_COLUMNS = {
+    "Rjct",
+    "Data File",
+    "Acq. Date-Time",
+    "Type",
+    "Level",
+    "Sample Name"
+}
+
+
 def load_icpms_file(uploaded_file):
 
-    raw = pd.read_excel(
+    raw = pd.read_csv(
         uploaded_file,
-        header=None
+        header=None,
+        dtype=str
     )
 
-    # header rows
     isotope_row = raw.iloc[0]
     field_row = raw.iloc[1]
 
     columns = []
-
     current_isotope = None
 
     for iso, field in zip(isotope_row, field_row):
@@ -21,28 +30,21 @@ def load_icpms_file(uploaded_file):
         iso = "" if pd.isna(iso) else str(iso).strip()
         field = "" if pd.isna(field) else str(field).strip()
 
-        # isotope label row
         if "->" in iso or "→" in iso:
             current_isotope = iso
 
-        # metadata columns
-        if field in [
-            "Rjct",
-            "Data File",
-            "Acq. Date-Time",
-            "Type",
-            "Level",
-            "Sample Name"
-        ]:
+        # metadata fields
+        if field in METADATA_COLUMNS:
             columns.append(field)
 
-        # isotope measurement columns
+        # isotope cps
         elif field == "CPS":
             columns.append(
                 f"{current_isotope}_CPS"
             )
 
-        elif "RSD" in field.upper():
+        # isotope rsd
+        elif field == "CPS RSD":
             columns.append(
                 f"{current_isotope}_CPS_RSD"
             )
@@ -52,7 +54,6 @@ def load_icpms_file(uploaded_file):
                 f"Unnamed_{len(columns)}"
             )
 
-    # actual data starts on row 2
     df = raw.iloc[2:].copy()
 
     df.columns = columns
