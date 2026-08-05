@@ -3,14 +3,13 @@ import pandas as pd
 
 def load_mass_file(uploaded_file):
 
-    xls = pd.ExcelFile(uploaded_file)
+    df = pd.read_csv(
+        uploaded_file
+    )
 
-    sheets = {}
+    df.columns = [
+        str(col).strip()
+        for col in df.columns
+    ]
 
-    for sheet in xls.sheet_names:
-        sheets[sheet] = pd.read_excel(
-            xls,
-            sheet_name=sheet
-        )
-
-    return sheets
+    return df
